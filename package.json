@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx start-server -s ./frontend/build"
+    "start": "npx start-server -s ./frontend/build",
+    "postinstall": "npm ci --prefix my-app",
+    "build": "npm run build --prefix my-app"
   },
   "author": "Igor Lebedev",
   "license": "ISC",
