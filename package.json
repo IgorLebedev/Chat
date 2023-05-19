@@ -1,0 +1,17 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "Chat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx start-server -s ./frontend/build"
+  },
+  "author": "Igor Lebedev",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/jwt": "^5.0.0",
+    "@fastify/static": "^5.0.0",
+    "@hexlet/chat-server": "^1.1.6"
+  }
+}
