@@ -7,7 +7,7 @@ const Navigation = () => {
 
   return (
     <Navbar bg="white" expand="lg" className="shadow-sm">
-      <Container fluid>
+      <Container>
         <Navbar.Brand href="/">Chat</Navbar.Brand>
         {isLogged && <Button type="button" className="btn btn-dark btn-primary" onClick={() => logOut()}>Выйти</Button>}
       </Container>
