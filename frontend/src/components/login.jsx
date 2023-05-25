@@ -1,14 +1,24 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+} from 'react';
 import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
-import routes from '../routes/routes.js'
+import routes from '../routes/routes.js';
+import AuthContext from '../contexts/index.jsx';
 
 const Login = () => {
+  const { logIn } = useContext(AuthContext);
+  const navigate = useNavigate();
   const inputEl = useRef(null);
   useEffect(() => {
     inputEl.current.focus();
-  }, [])
+  }, []);
+
   const [loginProcess, setProcess] = useState(null);
   const formik = useFormik({
     initialValues: {
@@ -16,24 +26,26 @@ const Login = () => {
       password: '',
     },
     onSubmit: async (values) => {
-      setProcess('logging')
+      setProcess('logging');
       try {
-        const data = await axios.post(routes.login(), values);
-        console.log(data)
-        setProcess('success')
+        const response = await axios.post(routes.login(), values);
+        localStorage.setItem('token', response.data.token);
+        setProcess('success');
+        logIn();
+        navigate('/');
       } catch (error) {
-        console.log(error);
         setProcess('error');
       }
-    }
+    },
   });
+
   return (
     <div className="container-fluid">
       <Form onSubmit={formik.handleSubmit}>
         <h1>Войти</h1>
         <Form.Group className="form-floating mb-3">
           <Form.Control
-            type="username"
+            type="text"
             className="form-control"
             id="username"
             ref={inputEl}
@@ -44,7 +56,6 @@ const Login = () => {
             placeholder="username"
           />
           <Form.Label htmlFor="floatingInput">Ваш ник</Form.Label>
-          
         </Form.Group>
         <Form.Group className="form-floating mb-4">
           <Form.Control
@@ -58,7 +69,7 @@ const Login = () => {
           />
           <Form.Label htmlFor="password">Пароль</Form.Label>
           <Form.Control.Feedback className="invalid-tooltip " type="invalid">
-            Неправильный пароль или имя
+            Неверные имя пользователя или пароль
           </Form.Control.Feedback>
         </Form.Group>
         <Button type="submit" className="w-100 btn btn-dark" disabled={loginProcess === 'logging'}>
@@ -66,7 +77,7 @@ const Login = () => {
         </Button>
       </Form>
     </div>
-  )
+  );
 };
 
 export default Login;
