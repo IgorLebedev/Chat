@@ -1,7 +1,6 @@
 const apiPath = '/api/v1';
 
-const routes = {
-  login: () => `${apiPath}/login`
+export default {
+  login: () => `${apiPath}/login`,
+  data: () => `${apiPath}/data`,
 };
-
-export default routes;
