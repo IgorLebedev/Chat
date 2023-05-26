@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import NotFound from './components/notFound.jsx';
 import MainPage from './components/mainPage.jsx';
 import Login from './components/login.jsx';
@@ -14,9 +14,16 @@ import Navigation from './components/navbar.jsx';
 const AuthProvider = ({ children }) => {
   const [isLogged, setLoggedIn] = useState(false);
 
-  const logIn = () => setLoggedIn(true);
+  useEffect(() => {
+    if (localStorage.token) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  const logIn = () => {
+    setLoggedIn(true);
+  };
   const logOut = () => {
-    console.log(localStorage);
     localStorage.removeItem('token');
     setLoggedIn(false);
   };
@@ -30,17 +37,16 @@ const AuthProvider = ({ children }) => {
 
 const MainRoute = ({ children }) => {
   const { token } = localStorage;
-  const { isLogged } = useContext(AuthContext);
   return (
-    token || isLogged ? children : <Navigate to="/login" />
+    token ? children : <Navigate to="/login" />
   );
 };
 
 const App = () => (
   <AuthProvider>
     <div className="d-flex flex-column h-100">
-      <Navigation />
       <BrowserRouter>
+        <Navigation />
         <Routes>
           <Route
             path="/"
