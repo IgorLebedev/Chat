@@ -21,7 +21,7 @@ const SocketProvider = ({ children }) => {
       socket.disconnect();
       console.log(connected);
     };
-  }, []);
+  }, [connected, dispatch]);
   const sendMessage = (message) => {
     ws.current.emit('newMessage', message);
   };
