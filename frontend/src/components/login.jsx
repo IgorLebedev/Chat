@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import routes from '../routes/routes.js';
-import AuthContext from '../contexts/index.jsx';
+import AuthContext from '../contexts/authContext.jsx';
 
 const Login = () => {
   const { logIn } = useContext(AuthContext);
@@ -28,10 +28,9 @@ const Login = () => {
     onSubmit: async (values) => {
       setProcess('logging');
       try {
-        const response = await axios.post(routes.login(), values);
-        localStorage.setItem('token', response.data.token);
+        const { data: { token } } = await axios.post(routes.login(), values);
         setProcess('success');
-        logIn();
+        logIn({ username: values.username, token });
         navigate('/');
       } catch (error) {
         setProcess('error');
