@@ -54,7 +54,7 @@ const Login = () => {
             isInvalid={loginProcess === 'error'}
             placeholder="username"
           />
-          <Form.Label htmlFor="floatingInput">Ваш ник</Form.Label>
+          <Form.Label htmlFor="username">Ваш ник</Form.Label>
         </Form.Group>
         <Form.Group className="form-floating mb-4">
           <Form.Control
@@ -67,7 +67,7 @@ const Login = () => {
             placeholder="password"
           />
           <Form.Label htmlFor="password">Пароль</Form.Label>
-          <Form.Control.Feedback className="invalid-tooltip " type="invalid">
+          <Form.Control.Feedback className="invalid-tooltip" type="invalid">
             Неверные имя пользователя или пароль
           </Form.Control.Feedback>
         </Form.Group>
