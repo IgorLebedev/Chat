@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { addMessage } from '../slicers/chat.js';
+import { addMessage, addChannel } from '../slicers/chat.js';
 import SocketContext from '../contexts/socketContext.jsx';
 
 const SocketProvider = ({ children }) => {
@@ -15,6 +15,10 @@ const SocketProvider = ({ children }) => {
       console.log(message);
       dispatch(addMessage(message));
     });
+    socket.on('newChannel', (channel) => {
+      console.log(channel);
+      dispatch(addChannel(channel));
+    });
     socket.on('disconnect', () => console.log('okok'));
     ws.current = socket;
     return () => {
@@ -22,12 +26,17 @@ const SocketProvider = ({ children }) => {
       console.log(connected);
     };
   }, [connected, dispatch]);
+
   const sendMessage = (message) => {
-    ws.current.emit('newMessage', message);
+    ws.current.emit('newMessage', message, (acknowledge) => acknowledge.status);
+  };
+  const sendChannel = (channel) => {
+    console.log(channel);
+    ws.current.emit('newChannel', channel);
   };
 
   return (
-    <SocketContext.Provider value={{ sendMessage }}>
+    <SocketContext.Provider value={{ sendMessage, sendChannel }}>
       {children}
     </SocketContext.Provider>
   );
