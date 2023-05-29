@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  channels: {},
+  channels: [],
   currentChannelId: null,
   messages: [],
 };
@@ -23,6 +23,9 @@ const chatReducer = createSlice({
     addMessage: (state, { payload }) => {
       state.messages.push(payload);
     },
+    addChannel: (state, { payload }) => {
+      state.channels.push(payload);
+    },
   },
 });
 
@@ -30,6 +33,7 @@ export const {
   initChat,
   changeChat,
   addMessage,
+  addChannel,
 } = chatReducer.actions;
 
 export default chatReducer.reducer;
