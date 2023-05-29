@@ -1,44 +1,36 @@
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useEffect, useRef, useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import axios from 'axios';
-import { useFormik } from 'formik';
 import routes from '../routes/routes.js';
 import { initChat } from '../slicers/chat.js';
+import Channel from './channel.jsx';
+import AuthContext from '../contexts/authContext.jsx';
+import MessageForm from './messageForm.jsx';
 
 const MainPage = () => {
-  const [loadingProcess, setProcess] = useState(null);
+  const [loadingProcess, setLoadingProcess] = useState(null);
   const { channels, currentChannelId, messages } = useSelector((state) => state.chats);
   const dispatch = useDispatch();
+  const { getAuthHeader } = useContext(AuthContext);
 
   useEffect(() => {
-    setProcess('loading');
+    setLoadingProcess('loading');
+    console.log(getAuthHeader());
     const getData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(routes.data(), { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(routes.data(), getAuthHeader());
         dispatch(initChat(res.data));
-        setProcess('loaded');
+        setLoadingProcess('loaded');
       } catch (err) {
-        setProcess('error');
+        setLoadingProcess('error');
       }
     };
     getData();
-  }, [dispatch]);
-
-  const inputMessage = useRef(null);
-
-  useEffect(() => {
-    if (loadingProcess === 'loaded') {
-      inputMessage.current.focus();
-    }
-  }, [loadingProcess]);
-
-  const formik = useFormik({
-    initialValues: {
-      message: '',
-    },
-  });
+  }, [dispatch, getAuthHeader]);
 
   return (
     <div className="container h-100 my-4 overflow-hidden rounded shadow">
@@ -46,25 +38,17 @@ const MainPage = () => {
         <div className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
           <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">
             <b>Каналы</b>
-            <Button type="button" className="p-0 text-primary btn btn-group-vertical">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-                width="20"
-                height="20"
-              />
+            <button type="button" className="p-0 text-primary btn btn-group-vertical">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+              </svg>
               <span className="visually-hidden">+</span>
-            </Button>
+            </button>
           </div>
           <ul id="channels-box" className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
             {loadingProcess === 'loaded' && channels.map(({ id, name }) => (
-              <li key={id} className="nav-item w-100">
-                <button type="button" className="w-100 rounded-0 text-start btn">
-                  <span className="me-1">#</span>
-                  {name}
-                </button>
-              </li>
+              <Channel key={id} id={id} name={name} />
             ))}
           </ul>
         </div>
@@ -76,25 +60,21 @@ const MainPage = () => {
                 <p className="m-0">
                   <b>{`# ${channels.find(({ id }) => currentChannelId === id).name}`}</b>
                 </p>
-                <span className="text-muted">{`${messages.length} сообщений`}</span>
+                <span className="text-muted">{`${messages.filter(({ channelId }) => currentChannelId === channelId).length} сообщений`}</span>
               </div>
-              <div id="messages-box" className="chat-messages overflow-auto px-5" />
+              <div id="messages-box" className="chat-messages overflow-auto px-5">
+                {messages
+                  .filter(({ channelId }) => channelId === currentChannelId)
+                  .map(({ body, id, username }) => (
+                    <div key={id} className="text-break mb-2">
+                      <b>{username}</b>
+                      {': '}
+                      {body}
+                    </div>
+                  ))}
+              </div>
               <div className="mt-auto px-5 py-3">
-                <Form className="py-1 border rounded-2">
-                  <Form.Group className="input-group">
-                    {console.log(formik.errors)}
-                    <Form.Control
-                      type="text"
-                      id="message"
-                      ref={inputMessage}
-                      className="border-0 p-0 ps-2"
-                      placeholder="Введите сообщение..."
-                      value={formik.values.message}
-                      onChange={formik.handleChange}
-                    />
-                    <Button type="submit" disabled={formik.values.message === ''} />
-                  </Form.Group>
-                </Form>
+                <MessageForm />
               </div>
             </>
             )}
