@@ -1,7 +1,9 @@
 import { io } from 'socket.io-client';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { addMessage, addChannel } from '../slicers/chat.js';
+import {
+  addMessage, addChannel, removeChannel, renameChannel,
+} from '../slicers/chat.js';
 import SocketContext from '../contexts/socketContext.jsx';
 
 const SocketProvider = ({ children }) => {
@@ -10,17 +12,15 @@ const SocketProvider = ({ children }) => {
   const ws = useRef(null);
   useEffect(() => {
     const socket = io();
+
     socket.on('connect', () => setConnected(true));
-    socket.on('newMessage', (message) => {
-      console.log(message);
-      dispatch(addMessage(message));
-    });
-    socket.on('newChannel', (channel) => {
-      console.log(channel);
-      dispatch(addChannel(channel));
-    });
-    socket.on('disconnect', () => console.log('okok'));
+    socket.on('newMessage', (message) => dispatch(addMessage(message)));
+    socket.on('newChannel', (channel) => dispatch(addChannel(channel)));
+    socket.on('removeChannel', (channel) => dispatch(removeChannel(channel)));
+    socket.on('renameChannel', (channel) => dispatch(renameChannel(channel)));
+
     ws.current = socket;
+
     return () => {
       socket.disconnect();
       console.log(connected);
@@ -31,12 +31,23 @@ const SocketProvider = ({ children }) => {
     ws.current.emit('newMessage', message, (acknowledge) => acknowledge.status);
   };
   const sendChannel = (channel) => {
-    console.log(channel);
-    ws.current.emit('newChannel', channel);
+    ws.current.emit('newChannel', channel, ({ data }) => {
+      console.log(data);
+    });
+  };
+  const sendRemovedChannel = (channel) => {
+    ws.current.emit('removeChannel', channel);
+  };
+  const sendRenamedChannel = (channel) => {
+    ws.current.emit('renameChannel', channel);
   };
 
   return (
-    <SocketContext.Provider value={{ sendMessage, sendChannel }}>
+    <SocketContext.Provider
+      value={{
+        sendMessage, sendChannel, sendRemovedChannel, sendRenamedChannel,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );
