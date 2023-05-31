@@ -1,9 +1,9 @@
-import axios from 'axios';
 import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
+import axios from 'axios';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Button, Container, Form, Row, Col, Card,
 } from 'react-bootstrap';
@@ -82,7 +82,7 @@ const Login = () => {
             <Card.Footer>
               <div className="text-center">
                 <span>Нет аккаунта?</span>
-                <a href="/signup">Регистрация</a>
+                <Link to="/signup">Регистрация</Link>
               </div>
             </Card.Footer>
           </Card>
