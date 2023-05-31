@@ -22,7 +22,7 @@ const RemoveChannelModal = ({ closeHandler }) => {
         <p className="lead">Уверены?</p>
         <div className="d-flex justify-content-end">
           <Button type="button" variant="secondary" className="me-2" onClick={() => closeHandler()}>Отменить</Button>
-          <Button type="submit" variant="primary" onClick={() => removeHandler()}>Удалить</Button>
+          <Button type="submit" variant="danger" onClick={() => removeHandler()}>Удалить</Button>
         </div>
       </Modal.Body>
     </Modal>
