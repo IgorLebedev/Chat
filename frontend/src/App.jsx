@@ -8,6 +8,7 @@ import NotFound from './components/notFound.jsx';
 import MainPage from './components/mainPage.jsx';
 import Login from './components/login.jsx';
 import Navigation from './components/navbar.jsx';
+import SignUp from './components/signup.jsx';
 import AuthProvider from './providers/authProvider.jsx';
 import SocketProvider from './providers/socketProvider.jsx';
 
@@ -35,6 +36,7 @@ const App = () => (
             />
             <Route path="*" element={<NotFound />} />
             <Route path="login" element={<Login />} />
+            <Route path="signup" element={<SignUp />} />
           </Routes>
         </BrowserRouter>
       </div>
