@@ -2,20 +2,26 @@ import { io } from 'socket.io-client';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  addMessage, addChannel, removeChannel, renameChannel,
+  addMessage, addChannel, removeChannel, renameChannel, changeChat,
 } from '../slicers/chat.js';
 import SocketContext from '../contexts/socketContext.jsx';
 
 const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
+  const newChannelId = useRef(null);
   const ws = useRef(null);
   useEffect(() => {
     const socket = io();
 
     socket.on('connect', () => setConnected(true));
     socket.on('newMessage', (message) => dispatch(addMessage(message)));
-    socket.on('newChannel', (channel) => dispatch(addChannel(channel)));
+    socket.on('newChannel', (channel) => {
+      dispatch(addChannel(channel));
+      if (newChannelId.current) {
+        dispatch(changeChat(newChannelId.current));
+      }
+    });
     socket.on('removeChannel', (channel) => dispatch(removeChannel(channel)));
     socket.on('renameChannel', (channel) => dispatch(renameChannel(channel)));
 
@@ -32,7 +38,7 @@ const SocketProvider = ({ children }) => {
   };
   const sendChannel = (channel) => {
     ws.current.emit('newChannel', channel, ({ data }) => {
-      console.log(data);
+      newChannelId.current = data.id;
     });
   };
   const sendRemovedChannel = (channel) => {
