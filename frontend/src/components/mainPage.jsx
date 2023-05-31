@@ -22,7 +22,6 @@ const MainPage = () => {
   const { channels, currentChannelId, messages } = useSelector((state) => state.chats);
   const dispatch = useDispatch();
   const { getAuthHeader } = useContext(AuthContext);
-
   const modalHandlers = {
     openRemoveChannel: () => {
       setRemoveChannelModal(true);
