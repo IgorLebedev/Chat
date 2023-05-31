@@ -39,7 +39,6 @@ const SignUp = () => {
       username: '',
       password: '',
       passwordConfirm: '',
-      isValidName: '',
     },
     validationSchema: signUpSchema,
     onSubmit: async ({ username, password }) => {
@@ -52,7 +51,7 @@ const SignUp = () => {
       } catch (error) {
         setProcess('error');
         if (error.response.status === 409) {
-          formik.setFieldError('isValidName', 'Такой пользователь уже существует');
+          setProcess('uniqueError');
         } else {
           console.warn(error);
         }
@@ -77,15 +76,19 @@ const SignUp = () => {
                     id="username"
                     ref={usernameInput}
                     onBlur={formik.handleBlur}
-                    isInvalid={formik.touched.username && formik.errors.username}
+                    isInvalid={(formik.touched.username && formik.errors.username)
+                    || signUpProcess === 'uniqueError'}
+                    required
                     onChange={formik.handleChange}
                     value={formik.values.username}
                     placeholder="username"
                   />
                   <Form.Label htmlFor="username">Имя пользователя</Form.Label>
+                  {signUpProcess !== 'uniqueError' && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
                     {formik.errors.username}
                   </Form.Control.Feedback>
+                  )}
                 </Form.Group>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
@@ -93,15 +96,19 @@ const SignUp = () => {
                     className="form-control"
                     id="password"
                     onBlur={formik.handleBlur}
-                    isInvalid={formik.touched.password && formik.errors.password}
+                    isInvalid={(formik.touched.password && formik.errors.password)
+                    || signUpProcess === 'uniqueError'}
+                    required
                     onChange={formik.handleChange}
                     value={formik.values.password}
                     placeholder="password"
                   />
                   <Form.Label htmlFor="password">Пароль</Form.Label>
+                  {signUpProcess !== 'uniqueError' && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    {formik.errors.password}
+                      {formik.errors.password}
                   </Form.Control.Feedback>
+                  )}
                 </Form.Group>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
@@ -109,21 +116,18 @@ const SignUp = () => {
                     className="form-control"
                     id="passwordConfirm"
                     onBlur={formik.handleBlur}
-                    isInvalid={formik.touched.passwordConfirm && formik.errors.passwordConfirm}
+                    isInvalid={(formik.touched.passwordConfirm && formik.errors.passwordConfirm)
+                    || signUpProcess === 'uniqueError'}
+                    required
                     onChange={formik.handleChange}
                     value={formik.values.passwordConfirm}
                     placeholder="passwordConfirm"
                   />
                   <Form.Label htmlFor="passwordConfirm">Пароль</Form.Label>
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    {formik.errors.passwordConfirm}
+                    {signUpProcess === 'uniqueError' ? 'Такой пользователь уже существует' : formik.errors.passwordConfirm}
                   </Form.Control.Feedback>
                 </Form.Group>
-                {formik.errors.isValidName && Object.keys(formik.errors).length > 0 && (
-                  <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    Ошибка формы. Проверьте введенные данные.
-                  </Form.Control.Feedback>
-                )}
                 <Button type="submit" variant="outline-dark w-100" disabled={signUpProcess === 'signingUp'}>Зарегистрироваться</Button>
               </Form>
             </Card>
