@@ -8,25 +8,12 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import routes from '../routes/routes';
 import AuthContext from '../contexts/authContext';
 
-const signUpSchema = Yup.object({
-  username: Yup
-    .string()
-    .min(3, 'От 3 до 20 символов')
-    .max(20, 'От 3 до 20 символов')
-    .required('Обязательное поле'),
-  password: Yup
-    .string()
-    .min(6, 'Не менее 6 символов')
-    .required('Обязательное поле'),
-  passwordConfirm: Yup
-    .string()
-    .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать'),
-});
-
 const SignUp = () => {
+  const { t } = useTranslation();
   const { logIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const [signUpProcess, setProcess] = useState(null);
@@ -40,7 +27,20 @@ const SignUp = () => {
       password: '',
       passwordConfirm: '',
     },
-    validationSchema: signUpSchema,
+    validationSchema: Yup.object({
+      username: Yup
+        .string()
+        .min(3, t('signup.validation.minmax'))
+        .max(20, t('signup.validation.minmax'))
+        .required(t('signup.validation.required')),
+      password: Yup
+        .string()
+        .min(6, t('signup.validation.min'))
+        .required(t('signup.validation.required')),
+      passwordConfirm: Yup
+        .string()
+        .oneOf([Yup.ref('password'), null], t('signup.validation.confirmation')),
+    }),
     onSubmit: async ({ username, password }) => {
       setProcess('signingUp');
       try {
@@ -58,9 +58,6 @@ const SignUp = () => {
       }
     },
   });
-  useEffect(() => {
-    console.log(formik.errors);
-  }, [formik.errors]);
   return (
     <Container fluid className="h-100">
       <Row className="row justify-content-center align-content-center h-100">
@@ -68,7 +65,7 @@ const SignUp = () => {
           <Card className="shadow-sm">
             <Card className="flex-column flex-md-row justify-content-around align-items-center p-5">
               <Form className="w-75" onSubmit={formik.handleSubmit}>
-                <h1 className="text-center mb-4">Регистрация</h1>
+                <h1 className="text-center mb-4">{t('signup.title')}</h1>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
                     type="username"
@@ -83,7 +80,7 @@ const SignUp = () => {
                     value={formik.values.username}
                     placeholder="username"
                   />
-                  <Form.Label htmlFor="username">Имя пользователя</Form.Label>
+                  <Form.Label htmlFor="username">{t('signup.username')}</Form.Label>
                   {signUpProcess !== 'uniqueError' && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
                     {formik.errors.username}
@@ -103,7 +100,7 @@ const SignUp = () => {
                     value={formik.values.password}
                     placeholder="password"
                   />
-                  <Form.Label htmlFor="password">Пароль</Form.Label>
+                  <Form.Label htmlFor="password">{t('signup.password')}</Form.Label>
                   {signUpProcess !== 'uniqueError' && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
                       {formik.errors.password}
@@ -123,12 +120,12 @@ const SignUp = () => {
                     value={formik.values.passwordConfirm}
                     placeholder="passwordConfirm"
                   />
-                  <Form.Label htmlFor="passwordConfirm">Пароль</Form.Label>
+                  <Form.Label htmlFor="passwordConfirm">{t('signup.confirmPassword')}</Form.Label>
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    {signUpProcess === 'uniqueError' ? 'Такой пользователь уже существует' : formik.errors.passwordConfirm}
+                    {signUpProcess === 'uniqueError' ? t('signup.validation.uniqueError') : formik.errors.passwordConfirm}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" variant="outline-dark w-100" disabled={signUpProcess === 'signingUp'}>Зарегистрироваться</Button>
+                <Button type="submit" variant="outline-dark w-100" disabled={signUpProcess === 'signingUp'}>{t('signup.submit')}</Button>
               </Form>
             </Card>
           </Card>
