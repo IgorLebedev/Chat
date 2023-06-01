@@ -7,10 +7,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Button, Container, Form, Row, Col, Card,
 } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import routes from '../routes/routes.js';
 import AuthContext from '../contexts/authContext.jsx';
 
 const Login = () => {
+  const { t } = useTranslation();
   const { logIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const inputEl = useRef(null);
@@ -44,7 +46,7 @@ const Login = () => {
           <Card>
             <Card.Body className="flex-column body row p-5">
               <Form onSubmit={formik.handleSubmit}>
-                <h1 className="text-center mb-4">Войти</h1>
+                <h1 className="text-center mb-4">{t('login.title')}</h1>
                 <Form.Group className="form-floating mb-3">
                   <Form.Control
                     type="text"
@@ -57,7 +59,7 @@ const Login = () => {
                     isInvalid={loginProcess === 'error'}
                     placeholder="username"
                   />
-                  <Form.Label htmlFor="username">Ваш ник</Form.Label>
+                  <Form.Label htmlFor="username">{t('login.username')}</Form.Label>
                 </Form.Group>
                 <Form.Group className="form-floating mb-4">
                   <Form.Control
@@ -69,20 +71,21 @@ const Login = () => {
                     isInvalid={loginProcess === 'error'}
                     placeholder="password"
                   />
-                  <Form.Label htmlFor="password">Пароль</Form.Label>
+                  <Form.Label htmlFor="password">{t('login.password')}</Form.Label>
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    Неверные имя пользователя или пароль
+                    {t('login.validation.invalidLogin')}
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Button type="submit" className="w-100 btn btn-dark" disabled={loginProcess === 'logging'}>
-                  Войти
+                  {t('login.submit')}
                 </Button>
               </Form>
             </Card.Body>
             <Card.Footer>
               <div className="text-center">
-                <span>Нет аккаунта?</span>
-                <Link to="/signup">Регистрация</Link>
+                <span>{t('login.noAccount')}</span>
+                {' '}
+                <Link to="/signup">{t('login.registration')}</Link>
               </div>
             </Card.Footer>
           </Card>

@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useContext } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import SocketContext from '../../contexts/socketContext';
 
 const NewChannelModal = ({ closeHandler }) => {
+  const { t } = useTranslation();
   const { channels } = useSelector((state) => state.chats);
   const channelsNames = channels.map(({ name }) => name);
   const inputEl = useRef(null);
@@ -23,10 +25,10 @@ const NewChannelModal = ({ closeHandler }) => {
     validationSchema: Yup.object({
       name: Yup
         .string()
-        .min(3, 'От 3 до 20 символов')
-        .max(20, 'От 3 до 20 символов')
-        .required('Обязательное поле')
-        .notOneOf(channelsNames, 'Должно быть уникальным'),
+        .min(3, t('newChannelModal.validation.minmax'))
+        .max(20, t('newChannelModal.validation.minmax'))
+        .required(t('newChannelModal.validation.required'))
+        .notOneOf(channelsNames, t('newChannelModal.validation.uniqueError')),
     }),
     onSubmit: ({ name }) => {
       sendChannel({ name });
@@ -37,7 +39,7 @@ const NewChannelModal = ({ closeHandler }) => {
   return (
     <Modal show onHide={closeHandler} aria-labelledby="contained-modal-title-vcenter">
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('newChannelModal.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
@@ -52,11 +54,11 @@ const NewChannelModal = ({ closeHandler }) => {
               value={formik.values.name}
               onChange={formik.handleChange}
             />
-            <Form.Label htmlFor="name" className="visually-hidden">Имя канала</Form.Label>
+            <Form.Label htmlFor="name" className="visually-hidden">{t('newChannelModal.name')}</Form.Label>
             <Form.Control.Feedback className="invalid-feedback">{formik.errors.name}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
-              <Button type="button" variant="secondary" className="me-2" onClick={closeHandler}>Отменить</Button>
-              <Button type="submit" variant="primary">Отправить</Button>
+              <Button type="button" variant="secondary" className="me-2" onClick={closeHandler}>{t('newChannelModal.cancelBtn')}</Button>
+              <Button type="submit" variant="primary">{t('newChannelModal.confirmBtn')}</Button>
             </div>
           </Form.Group>
         </Form>

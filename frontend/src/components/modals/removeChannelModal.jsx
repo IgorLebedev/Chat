@@ -1,10 +1,12 @@
 import { useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import SocketContext from '../../contexts/socketContext';
 import { setCurrentEditingChannel } from '../../slicers/chat';
 
 const RemoveChannelModal = ({ closeHandler }) => {
+  const { t } = useTranslation();
   const { currentEditingId } = useSelector((state) => state.chats);
   const dispatch = useDispatch();
   const { sendRemovedChannel } = useContext(SocketContext);
@@ -16,13 +18,13 @@ const RemoveChannelModal = ({ closeHandler }) => {
   return (
     <Modal show onHide={() => closeHandler()}>
       <Modal.Header closeButton>
-        <Modal.Title>Удалить канал</Modal.Title>
+        <Modal.Title>{t('removeChannelModal.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className="lead">Уверены?</p>
+        <p className="lead">{t('removeChannelModal.confirm')}</p>
         <div className="d-flex justify-content-end">
-          <Button type="button" variant="secondary" className="me-2" onClick={() => closeHandler()}>Отменить</Button>
-          <Button type="submit" variant="danger" onClick={() => removeHandler()}>Удалить</Button>
+          <Button type="button" variant="secondary" className="me-2" onClick={() => closeHandler()}>{t('removeChannelModal.cancelBtn')}</Button>
+          <Button type="submit" variant="danger" onClick={() => removeHandler()}>{t('removeChannelModal.confirmBtn')}</Button>
         </div>
       </Modal.Body>
     </Modal>

@@ -1,11 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { ButtonGroup, Dropdown } from 'react-bootstrap';
 import { changeChat, setCurrentEditingChannel } from '../slicers/chat';
 
 const RemovableChannel = ({
   id, name, dispatch, currentChannelId, openRenameModal, openRemoveModal,
 }) => {
+  const { t } = useTranslation();
   const removeModalHandler = () => {
     dispatch(setCurrentEditingChannel(id));
     openRemoveModal();
@@ -33,8 +35,8 @@ const RemovableChannel = ({
           drop="down"
         />
         <Dropdown.Menu>
-          <Dropdown.Item href="#/action-1" onClick={() => removeModalHandler()}>Удалить</Dropdown.Item>
-          <Dropdown.Item href="#/action-1" onClick={() => renameModalHandler()}>Переименовать</Dropdown.Item>
+          <Dropdown.Item href="#/action-1" onClick={() => removeModalHandler()}>{t('channels.removeBtn')}</Dropdown.Item>
+          <Dropdown.Item href="#/action-1" onClick={() => renameModalHandler()}>{t('channels.renameBtn')}</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </li>
@@ -56,14 +58,12 @@ const StaticChannel = ({
   </li>
 );
 
-const Channels = ({
-  loadingProcess, channels, openRenameModal, openRemoveModal,
-}) => {
-  const { currentChannelId } = useSelector((state) => state.chats);
+const Channels = ({ openRenameModal, openRemoveModal }) => {
+  const { currentChannelId, channels } = useSelector((state) => state.chats);
   const dispatch = useDispatch();
   return (
     <ul id="channels-box" className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
-      {loadingProcess === 'loaded' && channels.map(({ id, name, removable }) => (
+      {channels.map(({ id, name, removable }) => (
         <>
           {removable && (
           <RemovableChannel
