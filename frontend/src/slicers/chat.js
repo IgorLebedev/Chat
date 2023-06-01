@@ -32,7 +32,9 @@ const chatReducer = createSlice({
     removeChannel: (state, { payload }) => {
       state.channels = state.channels.filter(({ id }) => id !== payload.id);
       state.messages = state.messages.filter(({ channelId }) => channelId !== payload.id);
-      state.currentChannelId = DEFAULT_CHANNEL_ID;
+      if (state.currentChannelId === payload.id) {
+        state.currentChannelId = DEFAULT_CHANNEL_ID;
+      }
     },
     renameChannel: (state, { payload }) => {
       const desiredChannel = state.channels.find(({ id }) => payload.id === id);
