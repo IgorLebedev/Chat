@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import SocketContext from '../../contexts/socketContext';
-import { setCurrentEditingChannel } from '../../slicers/chat';
+import SocketContext from '../../contexts/SocketContext';
 
 const RenameChannelModal = ({ closeHandler }) => {
   const { t } = useTranslation();
   const { currentEditingId } = useSelector((state) => state.chats);
   const { channels } = useSelector((state) => state.chats);
   const desiredChannel = channels.find(({ id }) => id === currentEditingId);
-  const dispatch = useDispatch();
   const channelsNames = channels.map(({ name }) => name);
   const inputEl = useRef(null);
   const { sendRenamedChannel } = useContext(SocketContext);
@@ -35,10 +34,15 @@ const RenameChannelModal = ({ closeHandler }) => {
         .required(t('renameChannelModal.validation.required'))
         .notOneOf(channelsNames, t('renameChannelModal.validation.uniqueError')),
     }),
-    onSubmit: ({ name }) => {
-      sendRenamedChannel({ name, id: currentEditingId, removable: true });
-      closeHandler();
-      dispatch(setCurrentEditingChannel(null));
+    onSubmit: async ({ name }) => {
+      try {
+        await sendRenamedChannel({ name, id: currentEditingId, removable: true });
+        closeHandler();
+        toast.success(t('toast.renameChannel'));
+      } catch (error) {
+        toast.error(t('errors.network'));
+        console.warn(error);
+      }
     },
   });
 
@@ -54,6 +58,7 @@ const RenameChannelModal = ({ closeHandler }) => {
               type="text"
               id="name"
               ref={inputEl}
+              disabled={formik.isSubmitting}
               className="mb-2"
               placeholder=""
               isInvalid={formik.touched.name && formik.errors.name}
@@ -64,7 +69,7 @@ const RenameChannelModal = ({ closeHandler }) => {
             <Form.Control.Feedback className="invalid-feedback">{formik.errors.name}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
               <Button type="button" variant="secondary" className="me-2" onClick={closeHandler}>{t('renameChannelModal.cancelBtn')}</Button>
-              <Button type="submit" variant="primary">{t('renameChannelModal.confirmBtn')}</Button>
+              <Button type="submit" variant="primary" disabled={formik.isSubmitting}>{t('renameChannelModal.confirmBtn')}</Button>
             </div>
           </Form.Group>
         </Form>
