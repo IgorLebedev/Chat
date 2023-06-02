@@ -79,6 +79,14 @@ const ru = {
       cancelBtn: 'Отменить',
       confirmBtn: 'Удалить',
     },
+    toast: {
+      newChannel: 'Канал создан',
+      removeChannel: 'Канал удален',
+      renameChannel: 'Канал переименован',
+    },
+    errors: {
+      network: 'Ошибка соединения',
+    },
   },
 };
 
