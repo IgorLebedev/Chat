@@ -7,24 +7,25 @@ import React, {
 import axios from 'axios';
 import routes from '../routes/routes.js';
 import { initChat } from '../slicers/chat.js';
-import Channels from './channels.jsx';
-import MessageForm from './messages/messageForm.jsx';
-import MessagesBox from './messages/messagesBox.jsx';
-import MessagesHeader from './messages/messagesHeader.jsx';
-import ChannelsHeader from './channelsHeader.jsx';
-import AuthContext from '../contexts/authContext.jsx';
-import NewChannelModal from './modals/newChannelModal.jsx';
-import RemoveChannelModal from './modals/removeChannelModal.jsx';
-import RenameChannelModal from './modals/renameChannelModal.jsx';
-import SpinnerComponent from './spinner.jsx';
+import Channels from './Channels.jsx';
+import MessageForm from './messages/MessageForm.jsx';
+import MessagesBox from './messages/MessagesBox.jsx';
+import MessagesHeader from './messages/MessagesHeader.jsx';
+import ChannelsHeader from './ChannelsHeader.jsx';
+import AuthContext from '../contexts/AuthContext.jsx';
+import NewChannelModal from './modals/NewChannelModal.jsx';
+import RemoveChannelModal from './modals/RemoveChannelModal.jsx';
+import RenameChannelModal from './modals/RenameChannelModal.jsx';
+import SpinnerComponent from './Spinner.jsx';
 
 const MainPage = () => {
   const [loadingProcess, setLoadingProcess] = useState(null);
+  const { getAuthHeader } = useContext(AuthContext);
+  const dispatch = useDispatch();
+
   const [isNewChannelModalOpened, setNewChannelModal] = useState(false);
   const [isRemoveChannelModalOpened, setRemoveChannelModal] = useState(false);
   const [isRenameChannelModalOpened, setRenameChannelModal] = useState(false);
-  const dispatch = useDispatch();
-  const { getAuthHeader } = useContext(AuthContext);
   const modalHandlers = {
     openNewChannel: () => {
       setNewChannelModal(true);

@@ -64,8 +64,7 @@ const Channels = ({ openRenameModal, openRemoveModal }) => {
   return (
     <ul id="channels-box" className="nav flex-column nav-pills nav-fill px-2 mb-3 overflow-auto h-100 d-block">
       {channels.map(({ id, name, removable }) => (
-        <>
-          {removable && (
+        removable ? (
           <RemovableChannel
             key={id}
             id={id}
@@ -75,8 +74,7 @@ const Channels = ({ openRenameModal, openRemoveModal }) => {
             openRemoveModal={openRemoveModal}
             currentChannelId={currentChannelId}
           />
-          )}
-          {!removable && (
+        ) : (
           <StaticChannel
             key={id}
             id={id}
@@ -84,8 +82,7 @@ const Channels = ({ openRenameModal, openRemoveModal }) => {
             dispatch={dispatch}
             currentChannelId={currentChannelId}
           />
-          )}
-        </>
+        )
       ))}
     </ul>
   );

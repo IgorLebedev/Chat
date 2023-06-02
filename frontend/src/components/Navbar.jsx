@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Navbar, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import AuthContext from '../contexts/authContext.jsx';
+import AuthContext from '../contexts/AuthContext.jsx';
 
 const Navigation = () => {
   const { t } = useTranslation();
