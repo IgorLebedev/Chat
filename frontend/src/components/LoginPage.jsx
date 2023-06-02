@@ -3,13 +3,14 @@ import React, {
 } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Button, Container, Form, Row, Col, Card,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes/routes.js';
-import AuthContext from '../contexts/authContext.jsx';
+import AuthContext from '../contexts/AuthContext.jsx';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -20,21 +21,25 @@ const Login = () => {
     inputEl.current.focus();
   }, []);
 
-  const [loginProcess, setProcess] = useState(null);
+  const [validateError, setError] = useState(false);
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     onSubmit: async ({ username, password }) => {
-      setProcess('logging');
       try {
         const { data: { token } } = await axios.post(routes.login(), { username, password });
-        setProcess('success');
+        setError(false);
         logIn({ username, token });
         navigate('/');
       } catch (error) {
-        setProcess('error');
+        if (error.request.status === 401) {
+          setError(true);
+        } else {
+          console.warn(error);
+          toast.error(t('errors.network'));
+        }
       }
     },
   });
@@ -56,7 +61,7 @@ const Login = () => {
                     required
                     onChange={formik.handleChange}
                     value={formik.values.username}
-                    isInvalid={loginProcess === 'error'}
+                    isInvalid={validateError}
                     placeholder="username"
                   />
                   <Form.Label htmlFor="username">{t('login.username')}</Form.Label>
@@ -66,9 +71,10 @@ const Login = () => {
                     type="password"
                     className="form-control"
                     id="password"
+                    required
                     onChange={formik.handleChange}
                     value={formik.values.password}
-                    isInvalid={loginProcess === 'error'}
+                    isInvalid={validateError}
                     placeholder="password"
                   />
                   <Form.Label htmlFor="password">{t('login.password')}</Form.Label>
@@ -76,7 +82,7 @@ const Login = () => {
                     {t('login.validation.invalidLogin')}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" className="w-100 btn btn-dark" disabled={loginProcess === 'logging'}>
+                <Button type="submit" className="w-100 btn btn-dark" disabled={formik.isSubmitting}>
                   {t('login.submit')}
                 </Button>
               </Form>

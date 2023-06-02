@@ -8,15 +8,16 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import routes from '../routes/routes';
-import AuthContext from '../contexts/authContext';
+import AuthContext from '../contexts/AuthContext';
 
 const SignUp = () => {
   const { t } = useTranslation();
   const { logIn } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [signUpProcess, setProcess] = useState(null);
+  const [uniqueError, setError] = useState(false);
   const usernameInput = useRef(null);
   useEffect(() => {
     usernameInput.current.focus();
@@ -42,18 +43,17 @@ const SignUp = () => {
         .oneOf([Yup.ref('password'), null], t('signup.validation.confirmation')),
     }),
     onSubmit: async ({ username, password }) => {
-      setProcess('signingUp');
       try {
         const { data: { token } } = await axios.post(routes.signup(), { username, password });
         logIn({ username, token });
-        setProcess('success');
+        setError(false);
         navigate('/');
       } catch (error) {
-        setProcess('error');
-        if (error.response.status === 409) {
-          setProcess('uniqueError');
+        if (error.request.status === 409) {
+          setError(true);
         } else {
           console.warn(error);
+          toast.error(t('errors.network'));
         }
       }
     },
@@ -74,14 +74,14 @@ const SignUp = () => {
                     ref={usernameInput}
                     onBlur={formik.handleBlur}
                     isInvalid={(formik.touched.username && formik.errors.username)
-                    || signUpProcess === 'uniqueError'}
+                    || uniqueError}
                     required
                     onChange={formik.handleChange}
                     value={formik.values.username}
                     placeholder="username"
                   />
                   <Form.Label htmlFor="username">{t('signup.username')}</Form.Label>
-                  {signUpProcess !== 'uniqueError' && (
+                  {!uniqueError && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
                     {formik.errors.username}
                   </Form.Control.Feedback>
@@ -94,14 +94,14 @@ const SignUp = () => {
                     id="password"
                     onBlur={formik.handleBlur}
                     isInvalid={(formik.touched.password && formik.errors.password)
-                    || signUpProcess === 'uniqueError'}
+                    || uniqueError}
                     required
                     onChange={formik.handleChange}
                     value={formik.values.password}
                     placeholder="password"
                   />
                   <Form.Label htmlFor="password">{t('signup.password')}</Form.Label>
-                  {signUpProcess !== 'uniqueError' && (
+                  {!uniqueError && (
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
                       {formik.errors.password}
                   </Form.Control.Feedback>
@@ -114,7 +114,7 @@ const SignUp = () => {
                     id="passwordConfirm"
                     onBlur={formik.handleBlur}
                     isInvalid={(formik.touched.passwordConfirm && formik.errors.passwordConfirm)
-                    || signUpProcess === 'uniqueError'}
+                    || uniqueError}
                     required
                     onChange={formik.handleChange}
                     value={formik.values.passwordConfirm}
@@ -122,10 +122,10 @@ const SignUp = () => {
                   />
                   <Form.Label htmlFor="passwordConfirm">{t('signup.confirmPassword')}</Form.Label>
                   <Form.Control.Feedback className="invalid-tooltip" type="invalid">
-                    {signUpProcess === 'uniqueError' ? t('signup.validation.uniqueError') : formik.errors.passwordConfirm}
+                    {uniqueError ? t('signup.validation.uniqueError') : formik.errors.passwordConfirm}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" variant="outline-dark w-100" disabled={signUpProcess === 'signingUp'}>{t('signup.submit')}</Button>
+                <Button type="submit" variant="outline-dark w-100" disabled={formik.isSubmitting}>{t('signup.submit')}</Button>
               </Form>
             </Card>
           </Card>
