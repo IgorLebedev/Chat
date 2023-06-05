@@ -31,7 +31,6 @@ const SocketProvider = ({ children }) => {
 
     return () => {
       socket.disconnect();
-      console.log(connected);
     };
   }, [connected, dispatch]);
 
