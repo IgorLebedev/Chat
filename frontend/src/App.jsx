@@ -20,7 +20,8 @@ const MainRoute = ({ children }) => {
 };
 
 const App = () => {
-  leo.loadDictionary('ru');
+  leo.loadDictionary('en');
+  leo.add(leo.getDictionary('ru'));
   return (
     <div className="d-flex flex-column h-100">
       <BrowserRouter>
