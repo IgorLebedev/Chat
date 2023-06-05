@@ -1,8 +1,14 @@
-make install:
+install:
 	npm ci
 
-make build:
-	npm run build
+build:
+	npm build
 
-make start:
-	npm run start
+start-server:
+	npm start
+
+start-frontend: 
+	make -C frontend start
+
+start:
+	make start-frontend & make start-server
