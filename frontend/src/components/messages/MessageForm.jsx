@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useContext } from 'react';
 import { useFormik } from 'formik';
 import { Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import * as leo from 'leo-profanity';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import SocketContext from '../../contexts/SocketContext';
@@ -23,8 +24,10 @@ const MessageForm = () => {
       body: '',
     },
     onSubmit: async ({ body }) => {
+      const filtered = leo.clean(body);
+      console.log(filtered);
       try {
-        const status = await sendMessage({ body, username, channelId: currentChannelId });
+        const status = await sendMessage({ body: filtered, username, channelId: currentChannelId });
         if (status !== 'ok') {
           throw new Error();
         }
