@@ -21,7 +21,7 @@ const SocketProvider = ({ children }) => {
       dispatch(addChannel(channel));
       if (newChannelId.current) {
         dispatch(changeChat(newChannelId.current));
-        newChannelId.curren = null;
+        newChannelId.current = null;
       }
     });
     socket.on('removeChannel', (channel) => dispatch(removeChannel(channel)));
