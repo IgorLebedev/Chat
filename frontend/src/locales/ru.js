@@ -38,6 +38,7 @@ const ru = {
       channelsHeader: 'Каналы',
       removeBtn: 'Удалить',
       renameBtn: 'Переименовать',
+      control: 'Управление каналом',
     },
     messages: {
       amount: {
@@ -86,6 +87,9 @@ const ru = {
     },
     errors: {
       network: 'Ошибка соединения',
+    },
+    spinner: {
+      loading: 'Loading...',
     },
   },
 };
