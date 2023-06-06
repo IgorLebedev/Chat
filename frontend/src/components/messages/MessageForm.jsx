@@ -25,7 +25,6 @@ const MessageForm = () => {
     },
     onSubmit: async ({ body }) => {
       const filtered = leo.clean(body);
-      console.log(filtered);
       try {
         const status = await sendMessage({ body: filtered, username, channelId: currentChannelId });
         if (status !== 'ok') {
