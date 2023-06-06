@@ -1,7 +1,6 @@
 import React, {
   useState, useEffect, useRef, useContext,
 } from 'react';
-import axios from 'axios';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
@@ -9,7 +8,6 @@ import {
   Button, Container, Form, Row, Col, Card,
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import routes from '../routes/routes.js';
 import AuthContext from '../contexts/AuthContext.jsx';
 
 const Login = () => {
@@ -21,7 +19,7 @@ const Login = () => {
     inputEl.current.focus();
   }, []);
 
-  const [validateError, setError] = useState(false);
+  const [validateError, setValidateError] = useState(false);
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -29,13 +27,12 @@ const Login = () => {
     },
     onSubmit: async ({ username, password }) => {
       try {
-        const { data: { token } } = await axios.post(routes.login(), { username, password });
-        setError(false);
-        logIn({ username, token });
+        await logIn({ username, password });
+        setValidateError(false);
         navigate('/');
       } catch (error) {
         if (error.request.status === 401) {
-          setError(true);
+          setValidateError(true);
         } else {
           console.warn(error);
           toast.error(t('errors.network'));

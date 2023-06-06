@@ -5,17 +5,15 @@ import {
   Container, Row, Col, Form, Card, Button,
 } from 'react-bootstrap';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import routes from '../routes/routes';
 import AuthContext from '../contexts/AuthContext';
 
 const SignUp = () => {
   const { t } = useTranslation();
-  const { logIn } = useContext(AuthContext);
+  const { signUp } = useContext(AuthContext);
   const navigate = useNavigate();
   const [uniqueError, setError] = useState(false);
   const usernameInput = useRef(null);
@@ -44,8 +42,7 @@ const SignUp = () => {
     }),
     onSubmit: async ({ username, password }) => {
       try {
-        const { data: { token } } = await axios.post(routes.signup(), { username, password });
-        logIn({ username, token });
+        await signUp({ username, password });
         setError(false);
         navigate('/');
       } catch (error) {
