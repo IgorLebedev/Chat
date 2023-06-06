@@ -34,7 +34,7 @@ const RemovableChannel = ({
           id="dropdown-button-drop-down"
           drop="down"
         >
-          <span className="visually-hidden">Управление каналом</span>
+          <span className="visually-hidden">{t('channels.control')}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item href="#/action-1" onClick={() => removeModalHandler()}>{t('channels.removeBtn')}</Dropdown.Item>
