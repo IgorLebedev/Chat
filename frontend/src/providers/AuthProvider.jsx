@@ -1,11 +1,14 @@
+/* eslint-disable no-useless-catch */
 import { useState } from 'react';
+import axios from 'axios';
 import AuthContext from '../contexts/AuthContext.jsx';
+import routes from '../routes/routes.js';
 
 const AuthProvider = ({ children }) => {
   const localStorageUser = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(localStorageUser || null);
 
-  const logIn = (userData) => {
+  const saveUser = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
   };
@@ -14,14 +17,31 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const logIn = async (userData) => {
+    const { data: { token } } = await axios.post(routes.login(), userData);
+    saveUser({ username: userData.username, token });
+  };
+
+  const signUp = async (userData) => {
+    const { data: { token } } = await axios.post(routes.signup(), userData);
+    saveUser({ username: userData.username, token });
+  };
+
   const getAuthHeader = () => ({ headers: { Authorization: `Bearer ${user.token}` } });
+
+  const fetchData = async () => {
+    const { data } = await axios.get(routes.data(), getAuthHeader());
+    return data;
+  };
 
   return (
     <AuthContext.Provider value={{
       getAuthHeader,
       user,
       logIn,
+      signUp,
       logOut,
+      fetchData,
     }}
     >
       {children}
