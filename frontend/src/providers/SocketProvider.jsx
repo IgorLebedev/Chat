@@ -34,52 +34,36 @@ const SocketProvider = ({ children }) => {
     };
   }, [connected, dispatch]);
 
-  const sendMessage = async (message) => {
-    try {
-      const res = await new Promise((resolve, reject) => {
-        ws.current.emit('newMessage', message, (acknowledge) => resolve(acknowledge.status));
-        setTimeout(reject, 5000);
-      });
-      return res;
-    } catch (error) {
-      throw new Error('network error');
-    }
+  const sendMessage = (message) => {
+    const res = new Promise((resolve, reject) => {
+      ws.current.emit('newMessage', message, (acknowledge) => resolve(acknowledge.status));
+      setTimeout(reject, 5000);
+    });
+    return res;
   };
-  const sendChannel = async (channel) => {
-    try {
-      const res = await new Promise((resolve, reject) => {
-        ws.current.emit('newChannel', channel, (acknowledge) => {
-          newChannelId.current = acknowledge.data.id;
-          resolve(acknowledge.status);
-        });
-        setTimeout(reject, 5000);
+  const sendChannel = (channel) => {
+    const res = new Promise((resolve, reject) => {
+      ws.current.emit('newChannel', channel, (acknowledge) => {
+        newChannelId.current = acknowledge.data.id;
+        resolve(acknowledge.status);
       });
-      return res;
-    } catch (error) {
-      throw new Error('network error');
-    }
+      setTimeout(reject, 5000);
+    });
+    return res;
   };
-  const sendRemovedChannel = async (channel) => {
-    try {
-      const res = await new Promise((resolve, reject) => {
-        ws.current.emit('removeChannel', channel, (acknowledge) => resolve(acknowledge.status));
-        setTimeout(reject, 5000);
-      });
-      return res;
-    } catch (error) {
-      throw new Error('network error');
-    }
+  const sendRemovedChannel = (channel) => {
+    const res = new Promise((resolve, reject) => {
+      ws.current.emit('removeChannel', channel, (acknowledge) => resolve(acknowledge.status));
+      setTimeout(reject, 5000);
+    });
+    return res;
   };
-  const sendRenamedChannel = async (channel) => {
-    try {
-      const res = await new Promise((resolve, reject) => {
-        ws.current.emit('renameChannel', channel, (acknowledge) => resolve(acknowledge.status));
-        setTimeout(reject, 5000);
-      });
-      return res;
-    } catch (error) {
-      throw new Error('network error');
-    }
+  const sendRenamedChannel = (channel) => {
+    const res = new Promise((resolve, reject) => {
+      ws.current.emit('renameChannel', channel, (acknowledge) => resolve(acknowledge.status));
+      setTimeout(reject, 5000);
+    });
+    return res;
   };
 
   return (
