@@ -3,16 +3,16 @@ import NewChannelModal from './NewChannelModal';
 import RemoveChannelModal from './RemoveChannelModal';
 import RenameChannelModal from './RenameChannelModal';
 
-const getModal = (modal, closeHandler) => {
+const getModal = (modal) => {
   switch (modal) {
     case 'newChannel': {
-      return <NewChannelModal closeHandler={closeHandler} />;
+      return <NewChannelModal />;
     }
     case 'rename': {
-      return <RenameChannelModal closeHandler={closeHandler} />;
+      return <RenameChannelModal />;
     }
     case 'remove': {
-      return <RemoveChannelModal closeHandler={closeHandler} />;
+      return <RemoveChannelModal />;
     }
     default: throw new Error(`Unknown modal ${modal}`);
   }
