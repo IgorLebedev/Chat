@@ -1,21 +1,25 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import SocketContext from '../../contexts/SocketContext';
+import { closeModal } from '../../slicers/modals';
 
-const NewChannelModal = ({ closeHandler }) => {
+const NewChannelModal = () => {
   const { t } = useTranslation();
   const { channels } = useSelector((state) => state.chats);
+  const dispatch = useDispatch();
   const channelsNames = channels.map(({ name }) => name);
   const inputEl = useRef(null);
   const { sendChannel } = useContext(SocketContext);
   useEffect(() => {
     inputEl.current.focus();
   }, []);
+
+  const closeHandler = () => dispatch(closeModal());
 
   const formik = useFormik({
     initialValues: {
@@ -69,8 +73,21 @@ const NewChannelModal = ({ closeHandler }) => {
             <Form.Label htmlFor="name" className="visually-hidden">{t('newChannelModal.name')}</Form.Label>
             <Form.Control.Feedback className="invalid-feedback">{formik.errors.name}</Form.Control.Feedback>
             <div className="d-flex justify-content-end">
-              <Button type="button" variant="secondary" className="me-2" onClick={closeHandler}>{t('newChannelModal.cancelBtn')}</Button>
-              <Button type="submit" variant="primary" disabled={formik.isSubmitting}>{t('newChannelModal.confirmBtn')}</Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="me-2"
+                onClick={closeHandler}
+              >
+                {t('newChannelModal.cancelBtn')}
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={formik.isSubmitting}
+              >
+                {t('newChannelModal.confirmBtn')}
+              </Button>
             </div>
           </Form.Group>
         </Form>

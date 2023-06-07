@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import SocketContext from '../../contexts/SocketContext';
+import { closeModal } from '../../slicers/modals';
 
-const RenameChannelModal = ({ closeHandler }) => {
+const RenameChannelModal = () => {
   const { t } = useTranslation();
-  const { currentEditingId } = useSelector((state) => state.chats);
+  const { currentEditingId } = useSelector((state) => state.modals);
   const { channels } = useSelector((state) => state.chats);
+  const dispatch = useDispatch();
   const desiredChannel = channels.find(({ id }) => id === currentEditingId);
   const channelsNames = channels.map(({ name }) => name);
   const inputEl = useRef(null);
@@ -19,6 +21,8 @@ const RenameChannelModal = ({ closeHandler }) => {
     inputEl.current.focus();
     inputEl.current.select();
   }, []);
+
+  const closeHandler = () => dispatch(closeModal());
 
   const formik = useFormik({
     initialValues: {

@@ -2,14 +2,19 @@ import { useContext, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SocketContext from '../../contexts/SocketContext';
+import { closeModal } from '../../slicers/modals';
 
-const RemoveChannelModal = ({ closeHandler }) => {
+const RemoveChannelModal = () => {
   const { t } = useTranslation();
   const [isSubmitting, setSubmitting] = useState(false);
-  const { currentEditingId } = useSelector((state) => state.chats);
+  const { currentEditingId } = useSelector((state) => state.modals);
+  const dispatch = useDispatch();
   const { sendRemovedChannel } = useContext(SocketContext);
+
+  const closeHandler = () => dispatch(closeModal());
+
   const removeHandler = async () => {
     setSubmitting(true);
     try {
@@ -27,15 +32,15 @@ const RemoveChannelModal = ({ closeHandler }) => {
     }
   };
   return (
-    <Modal show onHide={() => closeHandler()}>
+    <Modal show onHide={closeHandler}>
       <Modal.Header closeButton>
         <Modal.Title>{t('removeChannelModal.title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p className="lead">{t('removeChannelModal.confirm')}</p>
         <div className="d-flex justify-content-end">
-          <Button type="button" variant="secondary" className="me-2" onClick={() => closeHandler()}>{t('removeChannelModal.cancelBtn')}</Button>
-          <Button type="submit" variant="danger" disabled={isSubmitting} onClick={() => removeHandler()}>{t('removeChannelModal.confirmBtn')}</Button>
+          <Button type="button" variant="secondary" className="me-2" onClick={closeHandler}>{t('removeChannelModal.cancelBtn')}</Button>
+          <Button type="submit" variant="danger" disabled={isSubmitting} onClick={removeHandler}>{t('removeChannelModal.confirmBtn')}</Button>
         </div>
       </Modal.Body>
     </Modal>
