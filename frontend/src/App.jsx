@@ -13,11 +13,12 @@ import Login from './components/LoginPage.jsx';
 import Navigation from './components/Navbar.jsx';
 import SignUp from './components/SignUpPage.jsx';
 import initI18n from './i18n';
+import { appRoutes } from './routes/routes.js';
 
 const MainRoute = ({ children }) => {
   const { user } = localStorage;
   return (
-    user ? children : <Navigate to="/login" />
+    user ? children : <Navigate to={appRoutes.loginPage()} />
   );
 };
 
@@ -32,16 +33,16 @@ const App = () => {
           <Navigation />
           <Routes>
             <Route
-              path="/"
+              path={appRoutes.mainPage()}
               element={(
                 <MainRoute>
                   <MainPage />
                 </MainRoute>
               )}
             />
-            <Route path="*" element={<NotFound />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<SignUp />} />
+            <Route path={appRoutes.notFoundPage()} element={<NotFound />} />
+            <Route path={appRoutes.loginPage()} element={<Login />} />
+            <Route path={appRoutes.signupPage()} element={<SignUp />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer
