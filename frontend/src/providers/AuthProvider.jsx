@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import AuthContext from '../contexts/AuthContext.jsx';
-import routes from '../routes/routes.js';
+import { serverRoutes } from '../routes/routes.js';
 
 const AuthProvider = ({ children }) => {
   const localStorageUser = JSON.parse(localStorage.getItem('user'));
@@ -18,19 +18,19 @@ const AuthProvider = ({ children }) => {
   };
 
   const logIn = async (userData) => {
-    const { data: { token } } = await axios.post(routes.login(), userData);
+    const { data: { token } } = await axios.post(serverRoutes.login(), userData);
     saveUser({ username: userData.username, token });
   };
 
   const signUp = async (userData) => {
-    const { data: { token } } = await axios.post(routes.signup(), userData);
+    const { data: { token } } = await axios.post(serverRoutes.signup(), userData);
     saveUser({ username: userData.username, token });
   };
 
   const getAuthHeader = () => ({ headers: { Authorization: `Bearer ${user.token}` } });
 
   const fetchData = async () => {
-    const { data } = await axios.get(routes.data(), getAuthHeader());
+    const { data } = await axios.get(serverRoutes.data(), getAuthHeader());
     return data;
   };
 
