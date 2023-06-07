@@ -4,6 +4,8 @@ import React, {
   useState,
   useContext,
 } from 'react';
+import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import { initChat } from '../slicers/chat.js';
 import Channels from './Channels.jsx';
 import MessageForm from './messages/MessageForm.jsx';
@@ -21,6 +23,7 @@ const MainPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const { t } = useTranslation;
     setLoadingProcess('loading');
     const getData = async () => {
       try {
@@ -29,6 +32,7 @@ const MainPage = () => {
         setLoadingProcess('loaded');
       } catch (err) {
         setLoadingProcess('error');
+        toast.error(t('errors.network'));
       }
     };
     getData();
