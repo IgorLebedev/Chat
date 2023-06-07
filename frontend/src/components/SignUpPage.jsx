@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../contexts/AuthContext';
+import { appRoutes } from '../routes/routes';
 
 const SignUp = () => {
   const { t } = useTranslation();
@@ -44,7 +45,7 @@ const SignUp = () => {
       try {
         await signUp({ username, password });
         setError(false);
-        navigate('/');
+        navigate(appRoutes.mainPage());
       } catch (error) {
         if (error.request.status === 409) {
           setError(true);

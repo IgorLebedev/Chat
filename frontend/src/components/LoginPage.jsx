@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import AuthContext from '../contexts/AuthContext.jsx';
+import { appRoutes } from '../routes/routes.js';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const Login = () => {
       try {
         await logIn({ username, password });
         setValidateError(false);
-        navigate('/');
+        navigate(appRoutes.mainPage());
       } catch (error) {
         if (error.request.status === 401) {
           setValidateError(true);
