@@ -6,7 +6,6 @@ const DEFAULT_CHANNEL_ID = 1;
 const initialState = {
   channels: [],
   currentChannelId: null,
-  currentEditingId: null,
   messages: [],
 };
 
@@ -40,9 +39,6 @@ const chatReducer = createSlice({
       const desiredChannel = state.channels.find(({ id }) => payload.id === id);
       desiredChannel.name = payload.name;
     },
-    setCurrentEditingChannel: (state, { payload }) => {
-      state.currentEditingId = payload;
-    },
   },
 });
 
@@ -52,7 +48,6 @@ export const {
   addMessage,
   addChannel,
   removeChannel,
-  setCurrentEditingChannel,
   renameChannel,
 } = chatReducer.actions;
 
