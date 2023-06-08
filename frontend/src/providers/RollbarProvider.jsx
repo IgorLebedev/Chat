@@ -3,12 +3,18 @@ import { Provider, ErrorBoundary } from '@rollbar/react';
 
 const Rollbar = ({ children }) => {
   const rollbarConfig = {
-    accessToken: '57f302e0546849e184c330ff966f9c07',
+    accessToken: process.env.ROLLBAR_TOKEN,
     environment: 'production',
   };
+  console.log(process.env);
+  function TestError() {
+    const a = null;
+    return a.hello();
+  }
   return (
     <Provider config={rollbarConfig}>
       <ErrorBoundary>
+        <TestError />
         {children}
       </ErrorBoundary>
     </Provider>
