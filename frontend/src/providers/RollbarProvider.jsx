@@ -6,14 +6,9 @@ const Rollbar = ({ children }) => {
     accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
     environment: 'production',
   };
-  function TestError() {
-    const a = null;
-    return a.hello();
-  }
   return (
     <Provider config={rollbarConfig}>
       <ErrorBoundary>
-        <TestError />
         {children}
       </ErrorBoundary>
     </Provider>
